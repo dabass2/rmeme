@@ -72,7 +72,7 @@ export const getMeme = createServerFn({ method: 'GET' })
   .validator(z.object({ id: z.number().int() }))
   .handler(async ({ data }) => {
     try {
-      return await request<Meme>(`/meme/${data.id}`, { authed: true })
+      return await request<Meme>(`/meme/${data.id}`)
     } catch (err) {
       if (err instanceof ApiError && err.status === 404) return null
       throw err

@@ -84,7 +84,6 @@ const getMeme = createRoute({
   path: "/{id}",
   tags: ["meme"],
   summary: "Gets a specific meme by ID",
-  security,
   request: { params: IdParamSchema },
   responses: {
     200: {
@@ -93,7 +92,6 @@ const getMeme = createRoute({
     },
     400: jsonMessage("bad request"),
     404: jsonMessage("meme not found"),
-    ...authResponses,
   },
 });
 

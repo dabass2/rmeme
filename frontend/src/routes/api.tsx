@@ -39,6 +39,13 @@ const publicEndpoints: Endpoint[] = [
   },
   {
     method: 'GET',
+    path: '/meme/:id',
+    description:
+      'Get a meme by its ID. Negative IDs count back from the newest meme, so -1 is the second newest.',
+    response: memeExample,
+  },
+  {
+    method: 'GET',
     path: '/health',
     description: 'Check that the API is up. Responds with plain text.',
     response: 'APP UP',
@@ -46,13 +53,6 @@ const publicEndpoints: Endpoint[] = [
 ]
 
 const keyedEndpoints: Endpoint[] = [
-  {
-    method: 'GET',
-    path: '/meme/:id',
-    description:
-      'Get a meme by its ID. Negative IDs count back from the newest meme, so -1 is the second newest.',
-    response: memeExample,
-  },
   {
     method: 'POST',
     path: '/meme',

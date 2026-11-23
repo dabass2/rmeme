@@ -29,7 +29,7 @@ API docs (Swagger UI) are served at `/docs`, and the OpenAPI spec at `/openapi.j
 | GET | `/rmeme` | | Random meme |
 | GET | `/rmeme/total` | | Total number of memes |
 | POST | `/meme` | ✓ | Upload a meme from a URL (`{ "url": "..." }`) |
-| GET | `/meme/:id` | ✓ | Get a meme by ID (negative IDs count back from the newest) |
+| GET | `/meme/:id` | | Get a meme by ID (negative IDs count back from the newest) |
 | PUT | `/meme/:id` | ✓ | Add votes to a meme (`{ "votes": 1 }`) |
 | DELETE | `/meme/:id` | ✓ | Delete a meme |
 
