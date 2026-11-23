@@ -1,0 +1,155 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Risograph palette: two fluorescent inks (pink, blue) on cool paper.
+ * Dark mode flips to the blue-black ink as the "paper".
+ */
+:root {
+  --paper: #eef1f5;
+  --ink: #1b1f3b;
+  --ink-soft: #565c7d;
+  --riso-pink: #ff48b0;
+  --riso-blue: #0078bf;
+  --riso-blend: multiply;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: #f8f9fb;
+  --card-foreground: var(--ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--paper);
+  --secondary: #e1e5ee;
+  --secondary-foreground: var(--ink);
+  --muted: #e1e5ee;
+  --muted-foreground: var(--ink-soft);
+  --accent: #e1e5ee;
+  --accent-foreground: var(--ink);
+  --destructive: #d92d4b;
+  --destructive-foreground: #ffffff;
+  --border: #cdd3df;
+  --input: #cdd3df;
+  --ring: var(--riso-blue);
+  --radius: 0.5rem;
+}
+
+.dark {
+  --paper: #13173a;
+  --ink: #eef1f5;
+  --ink-soft: #a5abcc;
+  --riso-pink: #ff5fbd;
+  --riso-blue: #3aa3ff;
+  --riso-blend: screen;
+
+  --card: #1a1f48;
+  --popover: #1a1f48;
+  --secondary: #252b5c;
+  --muted: #252b5c;
+  --accent: #252b5c;
+  --destructive: #ff5a76;
+  --border: #2f3670;
+  --input: #2f3670;
+}
+
+@theme inline {
+  --font-sans: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --color-pink: var(--riso-pink);
+  --color-blue: var(--riso-blue);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+  }
+  ::selection {
+    background: var(--riso-pink);
+    color: #fff;
+  }
+}
+
+/*
+ * The wordmark: the same word printed twice, pink over blue, slightly out
+ * of register — the one loud thing on the page.
+ */
+.riso {
+  position: relative;
+  display: inline-block;
+  font-weight: 800;
+  font-variation-settings: 'wdth' 80, 'opsz' 96;
+  letter-spacing: -0.045em;
+  line-height: 0.82;
+  isolation: isolate;
+}
+.riso > span {
+  display: block;
+  mix-blend-mode: var(--riso-blend);
+}
+.riso > .riso-pink {
+  color: var(--riso-pink);
+}
+.riso > .riso-blue {
+  position: absolute;
+  inset: 0;
+  color: var(--riso-blue);
+  transform: translate(var(--riso-x, 0.045em), var(--riso-y, 0.03em));
+}
+.riso-animate > .riso-blue {
+  animation: riso-settle 900ms cubic-bezier(0.2, 0.9, 0.2, 1) 120ms both;
+}
+@keyframes riso-settle {
+  from {
+    transform: translate(0.22em, -0.12em);
+    opacity: 0;
+  }
+  to {
+    transform: translate(var(--riso-x, 0.045em), var(--riso-y, 0.03em));
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .riso-animate > .riso-blue {
+    animation: none;
+  }
+}

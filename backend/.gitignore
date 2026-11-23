@@ -1,0 +1,8 @@
+node_modules
+images.json
+images
+*.py
+temp.js
+*.env*
+dist
+*.db
