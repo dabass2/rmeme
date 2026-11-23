@@ -34,3 +34,16 @@ API docs (Swagger UI) are served at `/docs`, and the OpenAPI spec at `/openapi.j
 | DELETE | `/meme/:id` | ✓ | Delete a meme |
 
 Authenticated routes need an `x-api-key` header. Each key has a daily request limit; the remaining count is returned in the `x-rate-limit` response header.
+
+## Creating API keys
+
+```bash
+npm run build
+node dist/scripts/create-api-key.js <name> [dailyLimit]
+```
+
+This adds a user and prints their key. On the server, run it inside the container:
+
+```bash
+docker compose exec rmeme-api node dist/scripts/create-api-key.js <name> [dailyLimit]
+```

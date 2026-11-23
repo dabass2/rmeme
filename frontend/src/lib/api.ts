@@ -55,8 +55,9 @@ async function request<T>(
   return body as T
 }
 
+/** The URL shown to visitors, which can differ from the one the server calls. */
 export const getApiUrl = createServerFn({ method: 'GET' }).handler(() =>
-  apiUrl(),
+  (process.env.RMEME_PUBLIC_API_URL ?? apiUrl()).replace(/\/$/, ''),
 )
 
 export const getRandomMeme = createServerFn({ method: 'GET' }).handler(() =>
