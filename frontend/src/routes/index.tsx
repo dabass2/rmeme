@@ -1,11 +1,22 @@
-import { queryOptions, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  keepPreviousData,
+  queryOptions,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { RefreshCwIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { CodeLine } from '#/components/code-line'
-import { MemeStage, MemeStageSkeleton } from '#/components/meme-stage'
+import {
+  frameSize,
+  isVideo,
+  MemeStage,
+  MemeStageSkeleton,
+} from '#/components/meme-stage'
 import { Button } from '#/components/ui/button'
 import { Wordmark } from '#/components/wordmark'
+import { cn } from '#/lib/utils'
 import { getApiUrl, getRandomMeme, getTotalMemes, type Meme } from '#/lib/api'
 
 const randomMeme = (n: number) =>
@@ -36,7 +47,12 @@ export const Route = createFileRoute('/')({
 })
 
 function preload(meme: Meme) {
-  if (meme.format === 'image' || meme.format === 'gif') {
+  if (isVideo(meme)) {
+    const video = document.createElement('video')
+    video.preload = 'auto'
+    video.muted = true
+    video.src = meme.url
+  } else {
     const img = new Image()
     img.src = meme.url
   }
@@ -46,7 +62,10 @@ function Home() {
   const { apiUrl } = Route.useLoaderData()
   const queryClient = useQueryClient()
   const [n, setN] = useState(0)
-  const meme = useQuery(randomMeme(n))
+  // Keep showing the current meme while the next one is fetched.
+  const meme = useQuery({ ...randomMeme(n), placeholderData: keepPreviousData })
+  const shownN = useRef(n)
+  if (!meme.isPlaceholderData) shownN.current = n
   const total = useQuery(totalMemes)
 
   // Fetch the next meme in the background so "Next" is instant.
@@ -60,14 +79,14 @@ function Home() {
   const next = () => setN((x) => x + 1)
 
   return (
-    <div className="grid items-start gap-10 pt-2 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14 lg:pt-10">
-      <section className="flex flex-col gap-6 lg:sticky lg:top-10">
+    <div className="grid items-start gap-7 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14 lg:pt-10">
+      <section className="flex flex-col gap-4 sm:gap-6 lg:sticky lg:top-10">
         <Wordmark
           as="h1"
           animate
-          className="text-[clamp(6rem,30vw,11.5rem)] -ml-[0.04em]"
+          className="text-[clamp(5rem,26vw,11.5rem)] -ml-[0.04em]"
         />
-        <p className="max-w-[34ch] text-xl leading-snug text-pretty">
+        <p className="max-w-[34ch] text-lg leading-snug text-pretty sm:text-xl">
           A random meme every time you ask. Vote on the good ones here, or pull
           them into your own app with one request.
         </p>
@@ -90,10 +109,13 @@ function Home() {
       </section>
 
       <section aria-label="Random meme">
-        {meme.data ? (
-          <MemeStage key={meme.data.meme_id + '-' + n} meme={meme.data} onNext={next} />
-        ) : meme.isError ? (
-          <div className="flex min-h-72 flex-col items-start justify-center gap-4 rounded-xl border-2 border-dashed p-8">
+        {meme.isError ? (
+          <div
+            className={cn(
+              'flex flex-col items-start justify-center gap-4 rounded-xl border-2 border-dashed p-8',
+              frameSize,
+            )}
+          >
             <p className="text-lg font-semibold">Couldn't reach the meme API.</p>
             <p className="text-muted-foreground">
               {meme.error instanceof Error ? meme.error.message : null}
@@ -103,6 +125,13 @@ function Home() {
               Try again
             </Button>
           </div>
+        ) : meme.data ? (
+          <MemeStage
+            key={shownN.current}
+            meme={meme.data}
+            onNext={next}
+            pending={meme.isPlaceholderData}
+          />
         ) : (
           <MemeStageSkeleton />
         )}

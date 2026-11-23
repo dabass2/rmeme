@@ -1,5 +1,5 @@
 import { createFileRoute, notFound, useNavigate } from '@tanstack/react-router'
-import { MemeStage } from '#/components/meme-stage'
+import { MemeStage, MemeStageSkeleton } from '#/components/meme-stage'
 import { getMeme } from '#/lib/api'
 
 export const Route = createFileRoute('/m/$id')({
@@ -19,6 +19,12 @@ export const Route = createFileRoute('/m/$id')({
     ],
   }),
   component: MemePage,
+  pendingMs: 150,
+  pendingComponent: () => (
+    <div className="mx-auto max-w-3xl pt-4">
+      <MemeStageSkeleton />
+    </div>
+  ),
   errorComponent: ({ error }) => (
     <div className="py-24">
       <h1 className="text-3xl font-bold tracking-tight">

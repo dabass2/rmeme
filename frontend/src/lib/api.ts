@@ -37,7 +37,11 @@ async function request<T>(
     headers.set('x-api-key', key)
   }
 
-  const res = await fetch(`${apiUrl()}${path}`, { ...rest, headers })
+  const res = await fetch(`${apiUrl()}${path}`, { ...rest, headers }).catch(
+    () => {
+      throw new ApiError("The meme API isn't responding right now.", 503)
+    },
+  )
   const body = (await res.json().catch(() => null)) as
     | (T & { message?: string })
     | null
