@@ -14,7 +14,7 @@ npm run dev   # http://localhost:3000
 | --- | --- | --- |
 | `RMEME_API_URL` | Base URL the server uses to call the backend | `https://api.rmeme.me` |
 | `RMEME_PUBLIC_API_URL` | Base URL shown to visitors | `RMEME_API_URL` |
-| `RMEME_API_KEY` | Key used for voting and `/m/:id` pages | |
+| `RMEME_API_KEY` | Key used for voting | |
 
 All API calls go through TanStack Start server functions (`src/lib/api.ts`), so `RMEME_API_KEY` stays on the server and never reaches the browser.
 

@@ -17,7 +17,10 @@ app.use(cors());
 app.route("/health", healthRouter);
 app.route("/rmeme", rmemeRouter);
 
-app.use("/meme/*", auth);
+// Reading a meme is public; uploading, voting and deleting need an API key.
+app.use("/meme/*", (c, next) =>
+  c.req.method === "GET" || c.req.method === "HEAD" ? next() : auth(c, next),
+);
 app.route("/meme", memeRouter);
 
 app.openAPIRegistry.registerComponent("securitySchemes", "ApiKey", {
